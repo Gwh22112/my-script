@@ -1,26 +1,31 @@
 return function()
+    return function(State)
 
-    local base = "https://raw.githubusercontent.com/Gwh22112/my-script/main/"
+        return function(item)
 
-    local State = {
-        AntiAFK = true,
+            if not State.IngredientFilter.Enabled then
+                return true
+            end
 
-        IngredientFilter = {
-            Enabled = false,
-            Name = "",
-            Rarity = "Any"
-        }
-    }
+            -- NAME FILTER
+            if State.IngredientFilter.Name ~= "" then
+                if not string.find(
+                    string.lower(item.Name),
+                    string.lower(State.IngredientFilter.Name)
+                ) then
+                    return false
+                end
+            end
 
-    local UI = loadstring(game:HttpGet(base .. "ui.lua"))()()
-    local Systems = loadstring(game:HttpGet(base .. "systems.lua"))()()
-    local Features = loadstring(game:HttpGet(base .. "features.lua"))()()
-    local Filter = loadstring(game:HttpGet(base .. "filter.lua"))()()
-    local AntiAFK = loadstring(game:HttpGet(base .. "antiafk.lua"))()()
+            -- RARITY FILTER
+            if State.IngredientFilter.Rarity ~= "Any" then
+                if item.Rarity ~= State.IngredientFilter.Rarity then
+                    return false
+                end
+            end
 
-    Systems(State)
-    AntiAFK(State)
-    Features(State, Filter)
-    UI(State)
+            return true
+        end
 
+    end
 end
